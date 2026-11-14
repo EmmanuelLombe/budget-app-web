@@ -1,7 +1,18 @@
+import { Route, Routes } from 'react-router-dom'
+import Design from './pages/Design'
+
 export default function App() {
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
-      <h1 className="text-2xl font-semibold text-slate-900">Budget App</h1>
-    </div>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <div className="p-8">
+            <h1 className="text-3xl">Budget App</h1>
+          </div>
+        }
+      />
+      <Route path="/design" element={<Design />} />
+    </Routes>
   )
 }

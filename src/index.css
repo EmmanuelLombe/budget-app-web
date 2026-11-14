@@ -1,1 +1,42 @@
 @import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --page: #F6F5F1;
+  --card: #FFFFFF;
+  --line: #E4E2DC;
+  --ink: #111111;
+  --muted: #6B6A66;
+  --brand: #522cab;
+  --on-brand:#FFFFFF;
+}
+
+.dark {
+  --page: #131315;
+  --card: #1D1D20;
+  --line: #2F2F34;
+  --ink: #F2F2F3;
+  --muted: #9A9AA3;
+  --brand: #9B7BF0;
+  --on-brand: #0A0A0B;
+}
+
+@theme inline {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+  --color-page: var(--page);
+  --color-card: var(--card);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-brand: var(--brand);
+  --color-on-brand: var(--on-brand);
+}
+
+@layer base {
+  body { @apply bg-page text-ink font-sans antialiased; }
+  h1, h2, h3 { letter-spacing: -0.03em; font-weight: 500; }
+}
