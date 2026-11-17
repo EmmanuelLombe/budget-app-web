@@ -1,5 +1,8 @@
-import type { ReactNode } from 'react'
 import ThemeToggle from '../components/ThemeToggle'
+import Amount from '../components/ui/Amount'
+import Button from '../components/ui/Button'
+import Card from '../components/ui/Card'
+import Label from '../components/ui/Label'
 
 const colours = [
   { name: 'page', cls: 'bg-page' },
@@ -9,14 +12,6 @@ const colours = [
   { name: 'muted', cls: 'bg-muted' },
   { name: 'brand', cls: 'bg-brand' },
 ]
-
-function Label({ children }: { children: ReactNode }) {
-  return (
-    <p className="font-mono text-xs uppercase tracking-widest text-muted">
-      {children}
-    </p>
-  )
-}
 
 export default function Design() {
   return (
@@ -47,32 +42,35 @@ export default function Design() {
           <p>Body text sits at the default size and weight.</p>
           <p className="text-sm text-muted">Secondary text for hints and captions.</p>
           <Label>Small label</Label>
-          <p className="font-mono text-4xl tabular-nums">R12,480.50</p>
+        </div>
+      </section>
+
+      <section>
+        <Label>Amounts</Label>
+        <div className="mt-4 space-y-2">
+          <Amount size="md">R1,500</Amount>
+          <Amount size="lg">R12,480.50</Amount>
+          <Amount size="xl">R12,480.50</Amount>
         </div>
       </section>
 
       <section>
         <Label>Buttons</Label>
         <div className="mt-4 flex flex-wrap gap-3">
-          <button className="rounded-full bg-ink px-5 py-2 text-sm text-page">
-            Primary
-          </button>
-          <button className="rounded-full border border-line bg-card px-5 py-2 text-sm">
-            Secondary
-          </button>
-          <button className="rounded-full bg-brand px-5 py-2 text-sm text-on-brand">
-            Brand
-          </button>
+          <Button>Primary</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="brand">Brand</Button>
+          <Button disabled>Disabled</Button>
         </div>
       </section>
 
       <section>
         <Label>Card</Label>
-        <div className="mt-4 max-w-sm rounded-2xl border border-line bg-card p-6">
+        <Card className="mt-4 max-w-sm">
           <Label>Emergency fund</Label>
-          <p className="mt-2 font-mono text-4xl tabular-nums">R1,500</p>
+          <Amount size="lg" className="mt-2">R1,500</Amount>
           <p className="mt-1 text-sm text-muted">25% of income</p>
-        </div>
+        </Card>
       </section>
     </div>
   )

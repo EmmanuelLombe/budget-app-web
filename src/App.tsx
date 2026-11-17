@@ -1,17 +1,20 @@
 import { Route, Routes } from 'react-router-dom'
+import AppShell from './components/layout/AppShell'
 import Design from './pages/Design'
+
+function Placeholder({ title }: { title: string }) {
+  return <h1 className="text-3xl">{title}</h1>
+}
 
 export default function App() {
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <div className="p-8">
-            <h1 className="text-3xl">Budget App</h1>
-          </div>
-        }
-      />
+      <Route element={<AppShell />}>
+        <Route path="/" element={<Placeholder title="Home" />} />
+        <Route path="/expenses" element={<Placeholder title="Expenses" />} />
+        <Route path="/buckets" element={<Placeholder title="Buckets" />} />
+        <Route path="/settings" element={<Placeholder title="Settings" />} />
+      </Route>
       <Route path="/design" element={<Design />} />
     </Routes>
   )
