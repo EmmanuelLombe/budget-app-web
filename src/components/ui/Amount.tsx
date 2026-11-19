@@ -17,7 +17,8 @@
 import { formatZAR } from '../../lib/money'
 import type { Cents } from '../../lib/types'
 
-const sizes = { md: 'text-xl', lg: 'text-4xl', xl: 'text-5xl' }
+// const sizes = { md: 'text-xl', lg: 'text-4xl', xl: 'text-5xl' }
+const sizes = { sm: 'text-lg', md: 'text-xl', lg: 'text-4xl', xl: 'text-5xl' }
 
 type Props = {
   cents: Cents
