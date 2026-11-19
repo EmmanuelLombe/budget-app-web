@@ -48,9 +48,13 @@ export default function Design() {
       <section>
         <Label>Amounts</Label>
         <div className="mt-4 space-y-2">
-          <Amount size="md">R1,500</Amount>
+          {/* <Amount size="md">R1,500</Amount>
           <Amount size="lg">R12,480.50</Amount>
-          <Amount size="xl">R12,480.50</Amount>
+          <Amount size="xl">R12,480.50</Amount> */}
+
+          <Amount cents={150000} size="md" />
+          <Amount cents={1248050} size="lg" />
+          <Amount cents={1248050} size="xl" />
         </div>
       </section>
 
@@ -68,7 +72,8 @@ export default function Design() {
         <Label>Card</Label>
         <Card className="mt-4 max-w-sm">
           <Label>Emergency fund</Label>
-          <Amount size="lg" className="mt-2">R1,500</Amount>
+          {/* <Amount size="lg" className="mt-2">R1,500</Amount> */}
+          <Amount cents={150000} size="lg" className="mt-2" />
           <p className="mt-1 text-sm text-muted">25% of income</p>
         </Card>
       </section>
