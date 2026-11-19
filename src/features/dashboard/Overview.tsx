@@ -18,17 +18,17 @@ export default function Overview({ summary, onSelect }: Props) {
       <div className="grid grid-cols-3 gap-4">
         <div>
           <Label>Income</Label>
-          <Amount cents={summary.incomeCents} size="md" className="mt-1" />
+          <Amount cents={summary.incomeCents} size="sm" className="mt-1" />
         </div>
         <div>
           <Label>Spent</Label>
-          <Amount cents={summary.spentCents} size="md" className="mt-1" />
+          <Amount cents={summary.spentCents} size="sm" className="mt-1" />
         </div>
         <div>
           <Label>Remaining</Label>
           <Amount
             cents={summary.remainingCents}
-            size="md"
+            size="sm"
             className={`mt-1 ${summary.remainingCents < 0 ? 'text-over' : ''}`}
           />
         </div>
