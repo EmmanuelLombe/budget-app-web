@@ -15,7 +15,7 @@ type Props = {
 export default function Overview({ summary, onSelect }: Props) {
   return (
     <Card>
-      <div className="grid grid-cols-3 gap-4">
+      {/* <div className="grid grid-cols-3 gap-4">
         <div>
           <Label>Income</Label>
           <Amount cents={summary.incomeCents} size="sm" className="mt-1" />
@@ -31,6 +31,28 @@ export default function Overview({ summary, onSelect }: Props) {
             size="sm"
             className={`mt-1 ${summary.remainingCents < 0 ? 'text-over' : ''}`}
           />
+        </div>
+      </div> */}
+
+
+      <div className="@container">
+        <div className="grid grid-cols-1 divide-y divide-line @lg:grid-cols-3 @lg:gap-4 @lg:divide-y-0">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <Label>Income</Label>
+            <Amount cents={summary.incomeCents} size="md" className="@lg:mt-1" />
+          </div>
+          <div className="flex items-baseline justify-between py-2 @lg:block @lg:py-0">
+            <Label>Spent</Label>
+            <Amount cents={summary.spentCents} size="md" className="@lg:mt-1" />
+          </div>
+          <div className="flex items-baseline justify-between py-2 @lg:block @lg:py-0">
+            <Label>Remaining</Label>
+            <Amount
+              cents={summary.remainingCents}
+              size="md"
+              className={`@lg:mt-1 ${summary.remainingCents < 0 ? 'text-over' : ''}`}
+            />
+          </div>
         </div>
       </div>
 

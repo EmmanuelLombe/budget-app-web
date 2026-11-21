@@ -42,7 +42,7 @@ export default function BucketDetail({ summary, color, onBack }: Props) {
           Back to overview
         </Button>
       </div>
-
+{/* 
       <div className="mt-6 grid grid-cols-2 divide-x divide-line">
         <div className="pr-4">
           <Label>Spent</Label>
@@ -51,6 +51,19 @@ export default function BucketDetail({ summary, color, onBack }: Props) {
         <div className="pl-6">
           <Label>Allocated</Label>
           <Amount cents={summary.allocatedCents} size="md" className="mt-1" />
+        </div>
+      </div> */}
+
+      <div className="@container mt-6">
+        <div className="grid grid-cols-1 gap-4 @sm:grid-cols-2 @sm:gap-0 @sm:divide-x @sm:divide-line">
+          <div className="@sm:pr-4">
+            <Label>Spent</Label>
+            <Amount cents={summary.spentCents} size="md" className="mt-1" />
+          </div>
+          <div className="@sm:pl-6">
+            <Label>Allocated</Label>
+            <Amount cents={summary.allocatedCents} size="md" className="mt-1" />
+          </div>
         </div>
       </div>
 
