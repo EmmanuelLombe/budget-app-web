@@ -7,6 +7,7 @@ import type { SplitShare } from '../../lib/types'
 import { useBudgetStore } from '../../store/useBudgetStore'
 import ShareRows from './ShareRows'
 import { useShareDraft } from './useShareDraft'
+import Button from '../../components/ui/Button'
 
 export default function SplitEditor() {
   const buckets = useBudgetStore((s) => s.buckets)
@@ -65,14 +66,14 @@ export default function SplitEditor() {
       </div>
 
       <div className="mt-6">
-        <button
-          type="button"
-          onClick={save}
-          disabled={!canSave}
-          className="rounded-lg bg-black px-4 py-2 text-white disabled:opacity-40 dark:bg-white dark:text-black"
+        <Button variant="primary" onClick={save} disabled={!canSave} type="button"
+          // type="button"
+          // onClick={save}
+          // disabled={!canSave}
+          // className="rounded-lg bg-black px-4 py-2 text-white disabled:opacity-40 dark:bg-white dark:text-black"
         >
           Save split
-        </button>
+        </Button>
         {message && (
           <p
             role="status"

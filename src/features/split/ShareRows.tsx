@@ -80,7 +80,7 @@ export default function ShareRows({ draft, exampleCents, idPrefix }: Props) {
       </ul>
 
       <div className="mt-6 border-t border-black/10 pt-4 dark:border-white/10" role="status">
-        <p className={diff === 0 ? 'font-medium' : 'font-medium text-amber-700 dark:text-amber-400'}>
+        <p className={diff === 0 ? 'font-medium' : 'font-medium text-amber-600 dark:text-amber-500'}>
           Total: {totalLabel}
         </p>
 

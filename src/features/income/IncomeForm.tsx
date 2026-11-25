@@ -8,6 +8,7 @@ import type { Cents, Income, SplitShare } from '../../lib/types'
 import ShareRows from '../split/ShareRows' // NEW
 import { useShareDraft } from '../split/useShareDraft' // NEW
 import { useBudgetStore } from '../../store/useBudgetStore'
+import Button from '../../components/ui/Button'
 
 const ERROR_TEXT: Record<IncomeError['code'], string> = {
   BAD_AMOUNT: 'Enter an amount above R0.',
@@ -249,21 +250,21 @@ export default function IncomeForm({ editing, onDone }: Props) {
         )}
 
         <div className="flex gap-3">
-          <button
-            type="submit"
-            disabled={!canSave}
-            className="rounded-lg bg-black px-4 py-2 text-white disabled:opacity-40 dark:bg-white dark:text-black"
+          <Button variant="primary" disabled={!canSave} type="submit"
+            // type="submit"
+            // disabled={!canSave}
+            // className="rounded-lg bg-black px-4 py-2 text-white disabled:opacity-40 dark:bg-white dark:text-black"
           >
             {editing ? 'Save changes' : 'Add income'}
-          </button>
+          </Button>
           {editing && (
-            <button
-              type="button"
-              onClick={onDone}
-              className="rounded-lg border border-black/15 px-4 py-2 dark:border-white/20"
+            <Button variant="secondary" onClick={onDone}  
+              // type="button"
+              // onClick={onDone}
+              // className="rounded-lg border border-black/15 px-4 py-2 dark:border-white/20"
             >
               Cancel
-            </button>
+            </Button>
           )}
         </div>
       </form>
