@@ -4,6 +4,12 @@ import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import Label from '../components/ui/Label'
 
+import { useState } from 'react'
+import DonutChart from '../components/charts/donutChart'
+import { bucketColor } from '../components/charts/bucketColour'
+import { buckets, incomes, splitSnapshots } from '../data/seed'
+import { allocateIncomes } from '../lib/split'
+
 const colours = [
   { name: 'page', cls: 'bg-page' },
   { name: 'card', cls: 'bg-card' },
@@ -13,7 +19,21 @@ const colours = [
   { name: 'brand', cls: 'bg-brand' },
 ]
 
+const allocated = allocateIncomes(incomes, splitSnapshots)
+
+const demoSlices = [
+  ...buckets.map((b) => ({
+    id: b.id,
+    name: b.name,
+    cents: allocated[b.id] ?? 0,
+    color: bucketColor(b.sortOrder),
+  })),
+  { id: 'goals', name: 'Goals', cents: 0, color: bucketColor(4) },
+]
+
 export default function Design() {
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+
   return (
     <div className="mx-auto max-w-4xl space-y-12 p-8">
       <header className="flex items-center justify-between">
@@ -56,6 +76,18 @@ export default function Design() {
           <Amount cents={1248050} size="lg" />
           <Amount cents={1248050} size="xl" />
         </div>
+      </section>
+
+      <section>
+        <Label>Donut</Label>
+        <Card className="mt-4 max-w-md">
+        <DonutChart
+          slices={demoSlices}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+          totalLabel="Allocated"
+        />
+        </Card>
       </section>
 
       <section>
