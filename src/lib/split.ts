@@ -131,3 +131,20 @@ export function allocateIncomes(
   }
   return totals;
 }
+
+/**
+ * Adds a snapshot to the list. If one already exists for the same
+ * effectiveFrom date, it is replaced, so saving twice in one day
+ * leaves a single snapshot. Returns a new list, sorted oldest first.
+ */
+export function upsertSnapshot(
+  snapshots: SplitSnapshot[],
+  next: SplitSnapshot,
+): SplitSnapshot[] {
+  return [
+    ...snapshots.filter((s) => s.effectiveFrom !== next.effectiveFrom),
+    next,
+  ].sort((a, b) =>
+    a.effectiveFrom < b.effectiveFrom ? -1 : a.effectiveFrom > b.effectiveFrom ? 1 : 0,
+  )
+}
