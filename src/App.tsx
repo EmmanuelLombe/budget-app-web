@@ -14,11 +14,11 @@ export default function App() {
     <Routes>
       <Route element={<AppShell />}>
         <Route path="/" element={<Home />} />
+        <Route path="/income" element={<IncomePage />} />
         <Route path="/expenses" element={<Placeholder title="Expenses" />} />
         <Route path="/buckets" element={<Buckets />} />
-        <Route path="/settings" element={<Placeholder title="Settings" />} />
+        <Route path="/settings" element={<Placeholder title="Settings" />} />   
       </Route>
-      <Route path="/income" element={<IncomePage />} />
       <Route path="/design" element={<Design />} />
     </Routes>
   )

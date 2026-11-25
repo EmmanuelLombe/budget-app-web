@@ -1,10 +1,12 @@
-import { useState, type FormEvent } from 'react'
+import { useMemo, useState, type FormEvent } from 'react'
 import Card from '../../components/ui/Card'
 import { todayISO } from '../../lib/dates'
 import { isValidISODate, type IncomeError } from '../../lib/incomes'
 import { formatZAR, parseToCents } from '../../lib/money'
 import { allocate, splitInForce } from '../../lib/split'
-import type { Cents, Income } from '../../lib/types'
+import type { Cents, Income, SplitShare } from '../../lib/types'
+import ShareRows from '../split/ShareRows' // NEW
+import { useShareDraft } from '../split/useShareDraft' // NEW
 import { useBudgetStore } from '../../store/useBudgetStore'
 
 const ERROR_TEXT: Record<IncomeError['code'], string> = {
@@ -41,20 +43,52 @@ export default function IncomeForm({ editing, onDone }: Props) {
   const [label, setLabel] = useState(editing?.label ?? '')
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
+  const [custom, setCustom] = useState(Boolean(editing?.allocation)) // NEW
+
+  // NEW: the boxes for a custom split
+  const active = useMemo(
+    () =>
+      buckets.filter((b) => !b.archivedAt).sort((a, b) => a.sortOrder - b.sortOrder),
+    [buckets],
+  )
+  function defaultSharesFor(onDate: string): SplitShare[] {
+    try {
+      return splitInForce(snapshots, onDate).shares
+    } catch {
+      return []
+    }
+  }
+  const draft = useShareDraft(
+    active,
+    editing?.allocation ?? defaultSharesFor(date),
+    () => {
+      setError(null)
+      setNotice(null)
+    },
+  )
+  function toggleCustom(checked: boolean) {
+    setCustom(checked)
+    // Start from the existing custom split, or the normal split to tweak.
+    if (checked) draft.reset(editing?.allocation ?? defaultSharesFor(date))
+    setError(null)
+    setNotice(null)
+  }
 
   const cents = parseToCents(amountText)
   const amountInvalid = amountText.trim() !== '' && cents === null
   const dateValid = isValidISODate(date)
-  const canSave = cents !== null && cents > 0 && dateValid
+  const canSave =
+    cents !== null && cents > 0 && dateValid && (!custom || draft.valid) // CHANGED
 
   const bucketName = (id: string) =>
     buckets.find((b) => b.id === id)?.name ?? 'Unknown bucket'
 
-  // How this income would divide. A custom split on an income being edited wins.
+  // How this income would divide under the normal split. CHANGED: not used for custom splits,
+  // because the custom rows below already show the amounts.
   const preview = (() => {
-    if (!cents || cents <= 0 || !dateValid) return null
+    if (custom || !cents || cents <= 0 || !dateValid) return null
     try {
-      const shares = editing?.allocation ?? splitInForce(snapshots, date).shares
+      const shares = splitInForce(snapshots, date).shares
       const parts = allocate(cents, shares)
       return shares
         .filter((s) => s.bps > 0)
@@ -70,12 +104,13 @@ export default function IncomeForm({ editing, onDone }: Props) {
 
   function submit(e: FormEvent) {
     e.preventDefault()
-    if (cents === null) return
+    if (cents === null || !canSave) return
     const input = {
       amountCents: cents,
       receivedAt: date,
       label,
-      allocation: editing?.allocation, // keep a custom split if there is one
+      // CHANGED: unticking the box removes a custom split
+      allocation: custom ? draft.shares.filter((s) => s.bps > 0) : undefined,
     }
     const err = editing ? updateIncome(editing.id, input) : addIncome(input)
     if (err) {
@@ -87,6 +122,7 @@ export default function IncomeForm({ editing, onDone }: Props) {
     if (!editing) {
       setAmountText('')
       setLabel('')
+      setCustom(false) // NEW
       setNotice('Income added.')
     }
     onDone()
@@ -156,6 +192,31 @@ export default function IncomeForm({ editing, onDone }: Props) {
           />
         </div>
 
+        {/* NEW: custom split */}
+        <div>
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              checked={custom}
+              onChange={(e) => toggleCustom(e.target.checked)}
+            />
+            Use a custom split for this income
+          </label>
+          {custom && (
+            <div className="mt-3 rounded-lg border border-black/10 p-4 dark:border-white/10">
+              <p className="mb-4 text-sm text-muted">
+                Only this income uses these percentages. Your normal split
+                stays as it is.
+              </p>
+              <ShareRows
+                draft={draft}
+                exampleCents={cents && cents > 0 ? cents : 1_000_000}
+                idPrefix="income-split"
+              />
+            </div>
+          )}
+        </div>
+
         {preview === 'NO_SPLIT' && (
           <p className="text-sm text-amber-700 dark:text-amber-400">
             No split was in force on this date. Pick a later date, or add an
@@ -164,9 +225,7 @@ export default function IncomeForm({ editing, onDone }: Props) {
         )}
         {Array.isArray(preview) && (
           <div className="rounded-lg bg-black/5 p-3 text-sm dark:bg-white/10">
-            <p className="font-medium">
-              {editing?.allocation ? 'This income’s custom split' : 'This will be split as'}
-            </p>
+            <p className="font-medium">This will be split as</p>
             <ul className="mt-2 space-y-1">
               {preview.map((row) => (
                 <li key={row.id} className="flex justify-between gap-4">

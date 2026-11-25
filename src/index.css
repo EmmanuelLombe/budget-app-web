@@ -12,14 +12,14 @@
   --muted: #6B6A66;
   --brand: #522cab;
   --on-brand:#FFFFFF;
-  --bucket-1: #4F6BE0;
+  --bucket-1: #522cab;
   --bucket-2: #1F9E92;
   --bucket-3: #B24C98;
   --bucket-4: #6B7A90;
   --bucket-5: #B39A63;
   --bucket-6: #3E9BD8;
-  --warn: #96600F;
-  --over: #B83250;
+  --warn: #bd7c19;
+  --over: #870816;
 }
 
 .dark {
@@ -28,16 +28,17 @@
   --line: #2F2F34;
   --ink: #F2F2F3;
   --muted: #9A9AA3;
-  --brand: #9B7BF0;
+  --brand: #5b25ef;
   --on-brand: #0A0A0B;
-    --bucket-1: #7B90F0;
+    --bucket-1: #5b25ef;
   --bucket-2: #46C2B5;
   --bucket-3: #D77FBF;
   --bucket-4: #98A5B8;
   --bucket-5: #D1BC88;
   --bucket-6: #6DBBF0;
-  --warn: #E0B050;
-  --over: #F0708A;
+  --warn: #a07010;
+  --over: #750713;
+;
 }
 
 @theme inline {
