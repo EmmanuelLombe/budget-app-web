@@ -22,7 +22,7 @@ const RADIUS = 104
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 const STROKE = 18
 const STROKE_SELECTED = 28
-const GAP = 3
+const GAP = 8
 
 export default function DonutChart({
   slices,
@@ -39,13 +39,21 @@ export default function DonutChart({
   const visible = slices.filter((s) => s.cents > 0)
   const gap = visible.length > 1 ? GAP : 0
 
-  const arcs = visible.map((slice, i) => {
-    const length = (slice.cents / total) * CIRCUMFERENCE
-    const start = visible
-      .slice(0, i)
-      .reduce((sum, s) => sum + (s.cents / total) * CIRCUMFERENCE, 0)
-    return { slice, start, drawn: Math.max(length - gap, 0.5) }
-  })
+  // const arcs = visible.map((slice, i) => {
+  //   const length = (slice.cents / total) * CIRCUMFERENCE
+  //   const start = visible
+  //     .slice(0, i)
+  //     .reduce((sum, s) => sum + (s.cents / total) * CIRCUMFERENCE, 0)
+  //   return { slice, start, drawn: Math.max(length - gap, 0.5) }
+  // })
+
+    const arcs = visible.map((slice, i) => {
+      const length = (slice.cents / total) * CIRCUMFERENCE
+      const start = visible
+        .slice(0, i)
+        .reduce((sum, s) => sum + (s.cents / total) * CIRCUMFERENCE, 0)
+      return { slice, start, length, drawn: Math.max(length - gap, 0.5) }
+})
 
   return (
     <div>
@@ -62,7 +70,7 @@ export default function DonutChart({
             />
           )}
 
-          {arcs.map(({ slice, start, drawn }) => {
+          {/* {arcs.map(({ slice, start, drawn }) => {
             const isSelected = slice.id === selectedId
             return (
               <circle
@@ -83,7 +91,40 @@ export default function DonutChart({
                 onClick={() => onSelect(isSelected ? null : slice.id)}
               />
             )
-          })}
+          })} */}
+
+          {arcs.map(({ slice, start, length }) => {
+            const isSelected = slice.id === selectedId
+            const width = isSelected ? STROKE_SELECTED : STROKE
+
+  // Round caps stick out by half the stroke width at each end, so the dash
+  // is shortened by a full stroke width plus the gap, then nudged inwards.
+            const room = length - gap - width
+            const drawn = Math.max(room, 0.01)
+  // A slice too small for a dash becomes a dot, centred in its slice.
+            const offset = room > 0 ? start + gap / 2 + width / 2 : start + length / 2
+
+            return (
+              <circle
+                key={slice.id}
+                cx={CENTER}
+                cy={CENTER}
+                r={RADIUS}
+                fill="none"
+                stroke={slice.color}
+                strokeLinecap="round"
+                transform={`rotate(-90 ${CENTER} ${CENTER})`}
+                className="cursor-pointer transition-all duration-200 motion-reduce:transition-none"
+                style={{
+                  strokeWidth: width,
+                  strokeDasharray: `${drawn} ${CIRCUMFERENCE - drawn}`,
+                  strokeDashoffset: -offset,
+                  opacity: selectedId && !isSelected ? 0.25 : 1,
+                }}
+                onClick={() => onSelect(isSelected ? null : slice.id)}
+              />
+            )
+})}
         </svg>
 
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-10 text-center">
