@@ -9,7 +9,7 @@ export default function AppShell() {
       <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-line p-4 md:flex">
         <p className="px-3 py-2 text-lg font-medium tracking-tight">Budget App</p>
 
-        <nav className="mt-6 flex flex-1 flex-col gap-1">
+        <nav className="mt-6 flex flex-1 flex-col gap-2">
           {navItems.map(({ to, label, icon: Icon, end }) => (
             <NavLink
               key={to}
