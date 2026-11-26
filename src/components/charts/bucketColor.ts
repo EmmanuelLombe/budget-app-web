@@ -6,9 +6,9 @@
 //   return `var(--bucket-${index})`
 // }
 
-import { effectivecolorIndex } from '../../lib/buckets'
+import { effectiveColorIndex } from '../../lib/buckets'
 
 /** Maps a bucket to one of the six bucket colour variables. */
 export function bucketColor(bucket: { colorIndex?: number; sortOrder?: number }): string {
-  return `var(--bucket-${effectivecolorIndex(bucket)})`
+  return `var(--bucket-${effectiveColorIndex(bucket)})`
 }

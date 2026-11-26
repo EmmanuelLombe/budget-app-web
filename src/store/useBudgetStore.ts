@@ -15,7 +15,15 @@ import {
   type IncomeInput,
 } from '../lib/incomes'
 import { periodForDate } from '../lib/periods'
-import { upsertSnapshot, validateShares, type SplitError } from '../lib/split'
+import {
+  splitInForce,
+  upsertSnapshot,
+  validateShares,
+  type SplitError,
+} from '../lib/split'
+import * as rules from '../lib/buckets'
+import type { MoveDirection } from '../lib/buckets'
+import { todayISO } from '../lib/dates'
 import {
   buckets,
   categories,
@@ -39,6 +47,12 @@ interface BudgetActions {
   /** Replaces the editable fields of an income. Leaving allocation out removes a custom split. */
   updateIncome: (id: string, input: IncomeInput) => IncomeError | null
   deleteIncome: (id: string) => void
+  /** Bucket actions return a message to show the user, or null on success. */
+  addBucket: (name: string) => string | null
+  renameBucket: (id: string, name: string) => string | null
+  archiveBucket: (id: string) => string | null
+  restoreBucket: (id: string) => string | null
+  moveBucket: (id: string, direction: MoveDirection) => string | null
   resetToDemo: () => void
 }
 
@@ -59,6 +73,15 @@ function demoData(): BudgetData {
 function cleanLabel(label: string | undefined): string | undefined {
   const trimmed = label?.trim()
   return trimmed ? trimmed : undefined
+}
+
+/** The shares of the split in force today. No split yet means no bucket has a share. */
+function sharesToday(snapshots: SplitSnapshot[]): SplitShare[] {
+  try {
+    return splitInForce(snapshots, todayISO()).shares
+  } catch {
+    return []
+  }
 }
 
 export const useBudgetStore = create<BudgetStore>()(
@@ -117,6 +140,51 @@ export const useBudgetStore = create<BudgetStore>()(
       deleteIncome: (id) =>
         set((state) => ({ incomes: state.incomes.filter((i) => i.id !== id) })),
 
+      addBucket: (name) => {
+        const result = rules.addBucket(get().buckets, name, crypto.randomUUID())
+        if ('error' in result) return result.error
+        set({ buckets: result.buckets })
+        return null
+      },
+
+      renameBucket: (id, name) => {
+        const result = rules.renameBucket(get().buckets, id, name)
+        if ('error' in result) return result.error
+        set({ buckets: result.buckets })
+        return null
+      },
+
+      archiveBucket: (id) => {
+        const state = get()
+        const result = rules.archiveBucket(
+          state.buckets,
+          id,
+          sharesToday(state.splitSnapshots),
+          new Date().toISOString(),
+        )
+        if ('error' in result) return result.error
+        // One set() so no screen ever sees buckets and categories out of step.
+        set({
+          buckets: result.buckets,
+          categories: rules.detachCategories(state.categories, id),
+        })
+        return null
+      },
+
+      restoreBucket: (id) => {
+        const result = rules.restoreBucket(get().buckets, id)
+        if ('error' in result) return result.error
+        set({ buckets: result.buckets })
+        return null
+      },
+
+      moveBucket: (id, direction) => {
+        const result = rules.moveBucket(get().buckets, id, direction)
+        if ('error' in result) return result.error
+        set({ buckets: result.buckets })
+        return null
+      },
+
       resetToDemo: () => set(demoData()),
     }),
     {
@@ -135,5 +203,3 @@ export const useBudgetStore = create<BudgetStore>()(
   ),
 )
 
-// TEMPORARY: lets us poke the store from the browser console. Remove later.
-if (import.meta.env.DEV) Object.assign(window, { budgetStore: useBudgetStore })
