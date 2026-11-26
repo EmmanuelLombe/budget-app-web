@@ -5,7 +5,7 @@ import Label from '../../components/ui/Label'
 import Progress from '../../components/ui/Progress'
 import { formatZAR } from '../../lib/money'
 import type { BucketSummary } from '../../lib/summary'
-import { barColor } from './barColour'
+import { barColor } from './barColor'
 
 type Props = {
   summary: BucketSummary

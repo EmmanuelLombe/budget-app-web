@@ -1,11 +1,11 @@
-import { bucketColor } from '../../components/charts/bucketColour'
+import { bucketColor } from '../../components/charts/bucketColor'
 import Amount from '../../components/ui/Amount'
 import Card from '../../components/ui/Card'
 import Label from '../../components/ui/Label'
 import Progress from '../../components/ui/Progress'
 import { formatZAR } from '../../lib/money'
 import type { PeriodSummary } from '../../lib/summary'
-import { barColor } from './barColour'
+import { barColor } from './barColor'
 
 type Props = {
   summary: PeriodSummary
@@ -58,7 +58,7 @@ export default function Overview({ summary, onSelect }: Props) {
 
       <ul className="mt-6 divide-y divide-line">
         {summary.buckets.map((b) => {
-          const color = bucketColor(b.sortOrder)
+          const color = bucketColor(b)
           return (
             <li key={b.bucketId}>
               <button

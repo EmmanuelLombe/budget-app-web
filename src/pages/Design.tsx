@@ -6,7 +6,7 @@ import Label from '../components/ui/Label'
 
 import { useState } from 'react'
 import DonutChart from '../components/charts/donutChart'
-import { bucketColor } from '../components/charts/bucketColour'
+import { bucketColor } from '../components/charts/bucketColor'
 import { buckets, incomes, splitSnapshots } from '../data/seed'
 import { allocateIncomes } from '../lib/split'
 
@@ -26,9 +26,9 @@ const demoSlices = [
     id: b.id,
     name: b.name,
     cents: allocated[b.id] ?? 0,
-    color: bucketColor(b.sortOrder),
+    color: bucketColor(b),
   })),
-  { id: 'goals', name: 'Goals', cents: 0, color: bucketColor(4) },
+  { id: 'goals', name: 'Goals', cents: 0, color: bucketColor({sortOrder: 4}) },
 ]
 
 export default function Design() {
@@ -42,7 +42,7 @@ export default function Design() {
       </header>
 
       <section>
-        <Label>Colours</Label>
+        <Label>Colors</Label>
         <div className="mt-4 grid grid-cols-3 gap-4 sm:grid-cols-6">
           {colours.map((c) => (
             <div key={c.name}>

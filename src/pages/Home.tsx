@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import DonutChart from '../components/charts/donutChart'
-import { bucketColor } from '../components/charts/bucketColour'
+import { bucketColor } from '../components/charts/bucketColor'
 import Card from '../components/ui/Card'
 import BucketDetail from '../features/dashboard/bucketDetail'
 import Overview from '../features/dashboard/Overview'
@@ -39,7 +39,7 @@ export default function Home() {
     id: b.bucketId,
     name: b.name,
     cents: b.allocatedCents,
-    color: bucketColor(b.sortOrder),
+    color: bucketColor(b),
   }))
 
   const selected = summary.buckets.find((b) => b.bucketId === selectedId) ?? null
@@ -64,7 +64,7 @@ export default function Home() {
         {selected ? (
           <BucketDetail
             summary={selected}
-            color={bucketColor(selected.sortOrder)}
+            color={bucketColor(selected)}
             onBack={() => setSelectedId(null)}
           />
         ) : (
