@@ -54,9 +54,9 @@ function pick<T>(items: T[]): T {
 // ---------- buckets, categories, splits ----------
 
 export const buckets: Bucket[] = [
-  { id: 'necessities', name: 'Necessities', sortOrder: 1 },
-  { id: 'personal', name: 'Personal', sortOrder: 2 },
-  { id: 'savings', name: 'Savings', sortOrder: 3 },
+  { id: 'necessities', name: 'Necessities', sortOrder: 1, colorIndex: 1 },
+  { id: 'personal', name: 'Personal', sortOrder: 2, colorIndex: 2 },
+  { id: 'savings', name: 'Savings', sortOrder: 3, colorIndex: 3 },
 ]
 
 export const categories: Category[] = [

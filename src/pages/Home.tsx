@@ -1,58 +1,34 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import DonutChart from '../components/charts/donutChart'
-import { bucketColor } from '../components/charts/bucketColour'
+import { bucketColor } from '../components/charts/bucketColor'
 import Card from '../components/ui/Card'
-import {
-  getBuckets,
-  getIncomes,
-  getSplitSnapshots,
-  getTransactions,
-} from '../data/api'
 import BucketDetail from '../features/dashboard/bucketDetail'
 import Overview from '../features/dashboard/Overview'
 import { periodForDate } from '../lib/periods'
-import { summarisePeriod, type PeriodSummary } from '../lib/summary'
-
-/** Today's date as 'YYYY-MM-DD' in the user's own time zone. */
-function todayISO(): string {
-  const d = new Date()
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
-}
+import { summarisePeriod } from '../lib/summary'
+import { useBudgetStore } from '../store/useBudgetStore'
+import { todayISO } from '../lib/dates'
 
 export default function Home() {
-  const [summary, setSummary] = useState<PeriodSummary | null>(null)
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
-  useEffect(() => {
-    let cancelled = false
+  // One field per call, so React only re-renders when that field changes.
+  const buckets = useBudgetStore((s) => s.buckets)
+  const incomes = useBudgetStore((s) => s.incomes)
+  const transactions = useBudgetStore((s) => s.transactions)
+  const snapshots = useBudgetStore((s) => s.splitSnapshots)
 
-    async function load() {
-      const [buckets, incomes, transactions, snapshots] = await Promise.all([
-        getBuckets(),
-        getIncomes(),
-        getTransactions(),
-        getSplitSnapshots(),
-      ])
-      if (cancelled) return
-      setSummary(
-        summarisePeriod({
-          periodId: periodForDate(todayISO()).id,
-          buckets,
-          incomes,
-          transactions,
-          snapshots,
-        }),
-      )
-    }
-
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  if (!summary) return <p className="text-muted">Loading…</p>
+  const summary = useMemo(
+    () =>
+      summarisePeriod({
+        periodId: periodForDate(todayISO()).id,
+        buckets,
+        incomes,
+        transactions,
+        snapshots,
+      }),
+    [buckets, incomes, transactions, snapshots],
+  )
 
   const month = new Intl.DateTimeFormat('en-ZA', {
     month: 'long',
@@ -63,7 +39,7 @@ export default function Home() {
     id: b.bucketId,
     name: b.name,
     cents: b.allocatedCents,
-    color: bucketColor(b.sortOrder),
+    color: bucketColor(b),
   }))
 
   const selected = summary.buckets.find((b) => b.bucketId === selectedId) ?? null
@@ -88,7 +64,7 @@ export default function Home() {
         {selected ? (
           <BucketDetail
             summary={selected}
-            color={bucketColor(selected.sortOrder)}
+            color={bucketColor(selected)}
             onBack={() => setSelectedId(null)}
           />
         ) : (

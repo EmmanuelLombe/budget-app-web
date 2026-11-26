@@ -9,6 +9,7 @@ export interface Bucket {
   name: string;
   sortOrder: number;
   archivedAt?: ISODateTime; // undefined = active
+  colorIndex?: number; // 1-6, fixed at creation to avoid recolouring
 }
 
 export interface Category {
